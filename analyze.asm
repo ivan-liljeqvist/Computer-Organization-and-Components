@@ -20,4 +20,8 @@ loop:
 
 stop:	j	stop		# loop forever here
 	nop			# delay slot filler (just in case)
+	
+	
 
+# Consider the large loop in the the original program – from the label loop to the branch bne loop. How many iterations are executed in this loop?
+# 14 iterations. (93-48)/3=15. The last one isn't printed. So 15-1=14
