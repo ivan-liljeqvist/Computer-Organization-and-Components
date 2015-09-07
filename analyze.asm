@@ -24,4 +24,5 @@ stop:	j	stop		# loop forever here
 	
 
 # Consider the large loop in the the original program – from the label loop to the branch bne loop. How many iterations are executed in this loop?
-# 14 iterations. (93-48)/3=15. The last one isn't printed. So 15-1=14
+# The loop has 14 iterations. $s0 starts at 48 (0x30) and stops at 93 (0x5d) increasing with step 3. 
+# (93-48)/3=15. The last one isn't printed. So 15-1=14
