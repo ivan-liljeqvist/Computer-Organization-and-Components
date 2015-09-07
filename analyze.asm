@@ -23,6 +23,11 @@ stop:	j	stop		# loop forever here
 	
 	
 
-# Consider the large loop in the the original program – from the label loop to the branch bne loop. How many iterations are executed in this loop?
-# The loop has 14 iterations. $s0 starts at 48 (0x30) and stops at 93 (0x5d) increasing with step 3. 
+# Q: Consider the large loop in the the original program – from the label loop to the branch bne loop. How many iterations are executed in this loop?
+# A: The loop has 14 iterations. $s0 starts at 48 (0x30) and stops at 93 (0x5d) increasing with step 3. 
 # (93-48)/3=15. The last one isn't printed. So 15-1=14
+
+# Q: How many lines of code had to be changed? Why?
+# A: 2 lines. on line 15, we changed the step from 1 to 3 because we want to print every third character.
+# We changed line 17 so that the loop condition matches the step. 
+# Otherwise the loop will "jump" past the condition and the loop will never end.
