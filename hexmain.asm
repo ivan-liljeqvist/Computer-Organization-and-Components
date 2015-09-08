@@ -25,18 +25,31 @@ stop:	j	stop		# stop after one run
   # You can write your own code for hexasc here
   #
   
-hexasc: 
-	li $t1,0x37 #hardcode the starting point from which we add letter values.
-	slti $t0,$a0,10 #check if letter or number. true = number. $t0 is 0 if input >10
-	beq $t0,$zero,isLetter #if letter fo to isLetter
+hexasc:
+	andi	$v0, $a0, 0xF
+	addi	$v0, $v0, 0x30
 	
-	addi $v0,$a0,0x30 #if not letter start from position 0x30 and add a0 steps. 0x30 is 0.
+	addi 	$t1, $zero,  0x3A
+	slt	$t2, $v0,$t1
 	
-	j	return    #return back
+	bne 	$t2, 1, letter
+	j	return
 	
-	isLetter: 
-		add $v0, $t1, $a0 #if letter start from position 0x37 (t1) and add a0. if a0 is 10 we'll get A and so on
-		j	return
+letter:
+	addi	$v0,$v0,7
+	j	return
+	
+	#li $t1,0x37 #hardcode the starting point from which we add letter values.
+	#slti $t0,$a0,10 #check if letter or number. true = number. $t0 is 0 if input >10
+	#beq $t0,$zero,isLetter #if letter fo to isLetter
+	
+	#addi $v0,$a0,0x30 #if not letter start from position 0x30 and add a0 steps. 0x30 is 0.
+	
+	#j	return    #return back
+	
+	#isLetter: 
+	#	add $v0, $t1, $a0 #if letter start from position 0x37 (t1) and add a0. if a0 is 10 we'll get A and so on
+	#	j	return
 		
 
 #Q: Assume that your subroutine hexasc is called with the integer-value 5 as the argument in register $a0. 
