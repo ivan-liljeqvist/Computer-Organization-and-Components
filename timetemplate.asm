@@ -98,16 +98,38 @@ nop
 time2string:
 	andi	$a1,$a1,0x0000fffff
 	addi	$t9,$zero,3 #counter to decide how many steps to shift
+	addi	$t7,$zero,2 #point at which we should add a colon
+	addi	$t6,$zero,4 #number of iterations left
 return:
 
-	beq	$t9,$zero, end
+	beq	$t6,$zero, end
 	srlv	$a0,$a1,$t9
-	subi	$t9,$t9,1 #lower counter
+	subi	$t9,$t9,1 #lower shift counter
+	subi	$t6,$t6,1 #lower interations counter
+	
+	beq	$t9,$t7,addColon #add color when we're in the middle
+	
+	sll	$t8,$t8,4 #make room for next letter by shifting left
+	add	$t8,$t8,$v0 #add letter
+	
 	jal	hexasc	
+	
 		
 	nop	
 	
-end:	
+
+	addColon:
+	#add colon to the string
+	sll	$t8,$t8,4 #make room for next letter by shifting left
+	addi	$t8,$t8,0x3A
+	
+	end:
+	#add null to the string and write to memory
+	#add NULL to the string
+	sll	$t8,$t8,4 #make room for next letter by shifting left
+	addi	$t8,$t8,0x00
+	sw 	$t8,($a0)
+	
 	
 	
 	
