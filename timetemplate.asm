@@ -75,19 +75,40 @@ tiend:	sw	$t0,0($a0)	# save updated result
   # you can write your code for subroutine "hexasc" below this line
   #
   
-hexasc: 
-	li $t1,0x37 #hardcode the starting point from which we add letter values.
-	slti $t0,$a0,10 #check if letter or number. true = number. $t0 is 0 if input >10
-	beq $t0,$zero,isLetter #if letter fo to isLetter
+
+hexasc:
+	andi	$v0, $a0, 0x00000f #Mask so that we ignore everything except the last 4 bits (F is 4 bits at the end) 
+	addi	$v0, $v0, 0x30	   #Add the start value of ASCII table
 	
-	addi $v0,$a0,0x30 #if not letter start from position 0x30 and add a0 steps. 0x30 is 0.
+	addi 	$t1, $zero,  0x3a  #Threshold between numbers and characters
+	slt	$t2, $v0,$t1	   #Decide if letter or character
 	
-	j	return    #return back
+	bne 	$t2, 1, letter
+	j	return
 	
-	isLetter: 
-		add $v0, $t1, $a0 #if letter start from position 0x37 (t1) and add a0. if a0 is 10 we'll get A and so on
-		j	return
+letter:
+	addi	$v0,$v0,7	  #If letter - jump 7 steps more to match where the letters are in the table
+	j	return
+
 		
 delay: jr $ra
 nop
+
+
+time2string:
+	andi	$a1,$a1,0x0000fffff
+	addi	$t9,$zero,3 #counter to decide how many steps to shift
+return:
+
+	beq	$t9,$zero, end
+	srlv	$a0,$a1,$t9
+	subi	$t9,$t9,1 #lower counter
+	jal	hexasc	
+		
+	nop	
+	
+end:	
+	
+	
+	
 		
