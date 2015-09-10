@@ -1,5 +1,6 @@
   # timetemplate.asm
   # Written 2015 by F Lundevall
+  # Modified and improved by Ivan Liljeqvist and Filip Martinsson
   # Copyright abandonded - this file is in the public domain.
 
 .macro	PUSH (%reg)
@@ -37,6 +38,7 @@ main:
 	lw	$a1,0($t0)
 	jal	time2string
 	nop
+mainReturn:
 	# print a newline
 	li	$a0,10
 	li	$v0,11
@@ -84,11 +86,11 @@ hexasc:
 	slt	$t2, $v0,$t1	   #Decide if letter or character
 	
 	bne 	$t2, 1, letter
-	j	return
+	jr	$ra
 	
 letter:
 	addi	$v0,$v0,7	  #If letter - jump 7 steps more to match where the letters are in the table
-	j	return
+	jr	$ra
 
 		
 delay: jr $ra
@@ -96,39 +98,113 @@ nop
 
 
 time2string:
-	andi	$a1,$a1,0x0000fffff
-	addi	$t9,$zero,3 #counter to decide how many steps to shift
-	addi	$t7,$zero,2 #point at which we should add a colon
-	addi	$t6,$zero,4 #number of iterations left
-return:
 
-	beq	$t6,$zero, end
-	srlv	$a0,$a1,$t9
-	subi	$t9,$t9,1 #lower shift counter
-	subi	$t6,$t6,1 #lower interations counter
+	#BACKUP THE REGISTERS WE'RE GOING TO USE
+	PUSH	$t8
+	PUSH	$t7
+	PUSH	$t6
+
+	addi	$a1,$a1,0x0000fffff
+	add	$t8,$zero,$a0 #COPY THE ADRESS
+	addi	$t7,$zero,0 #STRING TO RETURN
+	addi	$t6,$zero,0 #SECOND STRING TO RETURN
 	
-	beq	$t9,$t7,addColon #add color when we're in the middle
 	
-	sll	$t8,$t8,4 #make room for next letter by shifting left
-	add	$t8,$t8,$v0 #add letter
 	
-	jal	hexasc	
+	#compute the third character
+	srl	$a0,$a1,4 # shift so that we have the second digit last
 	
-		
+	#before calling hexasc, backup t8 and t7 as it may change them
+	PUSH	$t8
+	PUSH	$t7
+	PUSH	$t6
+	jal	hexasc
+	POP	$t6
+	POP	$t7
+	POP	$t8
+	
+	nop
+	
+	
+	
+	#append the third character
+	sll	$t7,$t7,8	
+	add	$t7,$t7,$v0 
+	
+	
+	#append the colon
+	sll	$t7,$t7,8	
+	add	$t7,$t7,0x3A
+	
+	#compute the second character
+	srl	$a0,$a1,8 # shift so that we have the second digit last
+	#before calling hexasc, backup t8 and t7 as it may change them
+	PUSH	$t8
+	PUSH	$t7
+	PUSH	$t6
+	jal	hexasc
+	POP	$t6
+	POP	$t7
+	POP	$t8
+	nop
+	
+	#append the second character
+	sll	$t7,$t7,8	
+	add	$t7,$t7,$v0 
+
+	#compute the first character
+	srl	$a0,$a1,12 # shift so that we have the first digit last
+	#before calling hexasc, backup t8 and t7 as it may change them
+	PUSH	$t8
+	PUSH	$t7
+	PUSH	$t6
+	jal	hexasc
+	POP	$t6
+	POP	$t7
+	POP	$t8
 	nop	
 	
-
-	addColon:
-	#add colon to the string
-	sll	$t8,$t8,4 #make room for next letter by shifting left
-	addi	$t8,$t8,0x3A
+	#append the first character
+	sll	$t7,$t7,8
+	add	$t7,$t7,$v0 
 	
-	end:
-	#add null to the string and write to memory
-	#add NULL to the string
-	sll	$t8,$t8,4 #make room for next letter by shifting left
-	addi	$t8,$t8,0x00
-	sw 	$t8,($a0)
+	
+	##INTRODUCING NEW VARIABLE t6. t7 is now full and cant be used anymore
+	
+	#append the fourth character
+	sll	$t6,$t6,8	
+	add	$t6,$t6,0x00
+	
+	#compute the fourth character
+	srl	$a0,$a1,0 # shift so that we have the second digit last
+	#before calling hexasc, backup t8 and t7 as it may change them
+	PUSH	$t8
+	PUSH	$t7
+	PUSH	$t6
+	jal	hexasc
+	POP	$t6
+	POP	$t7
+	POP	$t8
+	nop
+	
+	#append the fourth character
+	sll	$t6,$t6,8	
+	add	$t6,$t6,$v0
+	
+	
+	
+	#WRITE BOTH REGISTERS TO MEMORY
+	sw	$t7,0($t8)
+	sw	$t6,4($t8)
+	
+	#RESTORE THE REGISTERS
+	PUSH	$t6
+	PUSH	$t7
+	PUSH	$t8
+	#GO BACK
+	j	mainReturn
+	
+	
 	
 	
 	
