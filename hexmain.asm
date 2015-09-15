@@ -13,7 +13,6 @@ main:
 	jal	hexasc		# call hexasc
 	nop	# delay slot filler (just in case)	
 
-return:
 	move	$a0,$v0		# copy return value to argument register
 
 	li	$v0,11		# syscall with v0 = 11 will print out
@@ -32,11 +31,11 @@ hexasc:
 	slt	$t2, $v0,$t1	   #Decide if letter or character
 	
 	bne 	$t2, 1, letter
-	j	return
+	jr	$ra
 	
 letter:
 	addi	$v0,$v0,7	  #If letter - jump 7 steps more to match where the letters are in the table
-	j	return
+	jr	$ra
 	
 	
 		

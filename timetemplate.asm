@@ -94,14 +94,14 @@ delay:
 	PUSH $t0
 	PUSH $t1
 	
-	addi	$t0,$zero,0 #i
-	addi	$t1,$zero,22 #delay
+	addi	$t0,$zero,0 #i 
+	addi	$t1,$zero,700 #delay
 
 outerLoop:	
-	sub	$t0,$t0,$t0
-	ble	$a0,$zero,delayEnd
+	sub	$t0,$t0,$t0 #set i to 0
+	ble	$a0,$zero,delayEnd #check id a0 is less than zero
 	nop
-		subi	$a0,$a0,1
+	subi	$a0,$a0,1
 innerLoop:
 		addi	$t0,$t0,1
 		bne	$t0,$t1,innerLoop #less than delay constant, keep loop
@@ -119,115 +119,127 @@ delayEnd:
 
 time2string:
 
-	#BACKUP THE REGISTERS WE'RE GOING TO USE
-	PUSH	$t8
-	PUSH	$t7
-	PUSH	$t6
+	PUSH $s7
+	PUSH $s6
+	PUSH $s5
+	PUSH $s4
+	PUSH $s3
+	PUSH $s2
+
 
 	andi	$a1,$a1,0x0000ffff
-	add	$t8,$zero,$a0 #COPY THE ADRESS
-	addi	$t7,$zero,0 #STRING TO RETURN
-	addi	$t6,$zero,0 #SECOND STRING TO RETURN
-	add	$t5,$zero,$ra #save return adress
+	add	$s7,$zero,$a0 #COPY THE ADRESS
+	addi	$s6,$zero,0 #STRING TO RETURN
+	addi	$s5,$zero,0 #SECOND STRING TO RETURN
+	add	$s4,$zero,$ra #save return adress
 	
 	
 	
 	#compute the third character
 	srl	$a0,$a1,4 # shift so that we have the second digit last
 	
-	#before calling hexasc, backup t8 and t7 as it may change them
-	PUSH	$t8
-	PUSH	$t7
-	PUSH	$t6
+	
+
 	jal	hexasc
 	nop
-	POP	$t6
-	POP	$t7
-	POP	$t8
+
 	
 	
 	
 	
 	
 	#append the third character
-	sll	$t7,$t7,8	
-	add	$t7,$t7,$v0 
+	sll	$s6,$s6,8	
+	add	$s6,$s6,$v0 
 	
 	
 	#append the colon
-	sll	$t7,$t7,8	
-	add	$t7,$t7,0x3A
+	sll	$s6,$s6,8	
+	add	$s6,$s6,0x3A
 	
 	#compute the second character
 	srl	$a0,$a1,8 # shift so that we have the second digit last
-	#before calling hexasc, backup t8 and t7 as it may change them
-	PUSH	$t8
-	PUSH	$t7
-	PUSH	$t6
+	
 	jal	hexasc
 	nop
-	POP	$t6
-	POP	$t7
-	POP	$t8
 	
 	
 	#append the second character
-	sll	$t7,$t7,8	
-	add	$t7,$t7,$v0 
+	sll	$s6,$s6,8	
+	add	$s6,$s6,$v0 
 
 	#compute the first character
 	srl	$a0,$a1,12 # shift so that we have the first digit last
-	#before calling hexasc, backup t8 and t7 as it may change them
-	PUSH	$t8
-	PUSH	$t7
-	PUSH	$t6
+
 	jal	hexasc
 	nop
-	POP	$t6
-	POP	$t7
-	POP	$t8
-		
+
 	
 	#append the first character
-	sll	$t7,$t7,8
-	add	$t7,$t7,$v0 
+	sll	$s6,$s6,8
+	add	$s6,$s6,$v0 
 	
 	
-	##INTRODUCING NEW VARIABLE t6. t7 is now full and cant be used anymore
+	##INTRODUCING NEW VARIABLE s5. s6 is now full and cant be used anymore
 	
 	#append the null character
-	sll	$t6,$t6,8	
-	add	$t6,$t6,0x00
+	sll	$s5,$s5,8	
+	add	$s5,$s5,0x00	
 	
 	#compute the fourth character
 	srl	$a0,$a1,0 # shift so that we have the second digit last
-	#before calling hexasc, backup t8 and t7 as it may change them
-	PUSH	$t8
-	PUSH	$t7
-	PUSH	$t6
+	
+	addi	$s3,$zero,2 #to compare if the input is 2
+	add	$s2,$zero,$a0 #save a0 value, if it's f.ex. 12 we need to mask away the 1
+	andi	$s2,$s2,0x0000000f #mask
+	
+	beq	$s2,$s3,characterTwo
+	nop
+	
+
 	jal	hexasc
 	nop
-	POP	$t6
-	POP	$t7
-	POP	$t8
+
 	
 	
 	#append the fourth character
-	sll	$t6,$t6,8	
-	add	$t6,$t6,$v0
+	sll	$s5,$s5,8	
+	add	$s5,$s5,$v0
 	
+	
+	characterTwoReturn:
 	
 	
 	#WRITE BOTH REGISTERS TO MEMORY
-	sw	$t7,0($t8)
-	sw	$t6,4($t8)
+	sw	$s6,0($s7)
+	sw	$s5,4($s7)
 	
-	#RESTORE THE REGISTERS
-	PUSH	$t6
-	PUSH	$t7
-	PUSH	$t8
-	
+	POP $s2
+	POP $s3
+	POP $s5
+	POP $s6
+	POP $s7
 	
 	#GO BACK
-	jr	$t5
+	jr  $s4
+	POP $s4	#we cant pop before jumping
+
+	characterTwo:
+	sll	$s5,$s5,8	
+	add	$s5,$s5,0x4f #APPEND O
+	sll	$s5,$s5,8	
+	add	$s5,$s5,0x57 #APPEND W
+	sll	$s5,$s5,8	
+	add	$s5,$s5,0x54 #APPEND T
+	j	characterTwoReturn
 	nop
+	
+
+#Q: no result in v0, it writes to memory insted
+#Q: yes, to save and reset registers
+#Q: store in the temporary registers. $t0, †1
+#Q: we can't write to memory that is not aligned, the program will crash
+
+#When 0 - delay, outerLoop, innerLoop and then back to outerLoop. It's not less than 0
+#when 2 - delay, outerLoop, innerLoop and then back to outerLoop three times. 2,1,0
+#when -1 - delay, outerLoop (ble) - jump to delayEnd. Roughly 0

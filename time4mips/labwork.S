@@ -42,7 +42,7 @@ delay:
   PUSH $t1
   
   addi  $t0,$zero,0 #i
-  addi  $t1,$zero,22 #delay
+  addi  $t1,$zero,25830 #delay
 
 outerLoop:  
   sub $t0,$t0,$t0
