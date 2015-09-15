@@ -74,6 +74,7 @@ tiend:	sw	$t0,0($a0)	# save updated result
 	nop
 
 hexasc:
+	
 	andi	$v0, $a0, 0xf	   #Mask so that we ignore everything except the last 4 bits (F is 4 bits at the end) 
 	addi	$v0, $v0, 0x30	   #Add the start value of ASCII table
 	
@@ -91,8 +92,6 @@ letter:
 	nop
 		
 delay: 
-	PUSH $t0
-	PUSH $t1
 	
 	addi	$t0,$zero,0 #i 
 	addi	$t1,$zero,700 #delay
@@ -110,8 +109,6 @@ innerLoop:
 		nop
 	
 delayEnd:
-	POP $t1
-	POP $t0
 	
 	jr $ra
 	nop
@@ -137,15 +134,13 @@ time2string:
 	
 	#compute the third character
 	srl	$a0,$a1,4 # shift so that we have the second digit last
-	
-	
-
+	PUSH	$a0
+	PUSH	$a1
 	jal	hexasc
+	POP	$a1
+	POP	$a0
 	nop
 
-	
-	
-	
 	
 	
 	#append the third character
@@ -160,7 +155,11 @@ time2string:
 	#compute the second character
 	srl	$a0,$a1,8 # shift so that we have the second digit last
 	
+	PUSH	$a0
+	PUSH	$a1
 	jal	hexasc
+	POP	$a1
+	POP	$a0
 	nop
 	
 	
@@ -171,7 +170,11 @@ time2string:
 	#compute the first character
 	srl	$a0,$a1,12 # shift so that we have the first digit last
 
+	PUSH	$a0
+	PUSH	$a1
 	jal	hexasc
+	POP	$a1
+	POP	$a0
 	nop
 
 	
@@ -197,7 +200,11 @@ time2string:
 	nop
 	
 
+	PUSH	$a0
+	PUSH	$a1
 	jal	hexasc
+	POP	$a1
+	POP	$a0
 	nop
 
 	
