@@ -14,13 +14,13 @@
 
 int printedNumbersInRow=0;
 
-//FILIP MARTINSSON WROTE THIS
+//AUTHOR: IVAN LILJEQVIST 
 int is_prime(int n){
     int i;
     int res = 1;
 
     for(i=2;i<n;i++){
-        //If modulu is 0 we have successfuly divided the number by a number between 2 and n. Then it is not a prime.
+        //If modulu is 0, it was possible to divide by 0 and it's not a prime.
         if(n%i==0){
             res=0;
             break;
@@ -30,6 +30,7 @@ int is_prime(int n){
     return res;
 }
 
+//AUTHOR: IVAN LILJEQVIST 
 void print_number(int n){
 
   printf("%10d ", n);
@@ -44,14 +45,15 @@ void print_number(int n){
   
 }
 
+//IVAN LILJEQVIST WROTE THIS
 void print_primes(int n){
   // Should print out all prime numbers less than 'n'
   // with the following formatting. Note that
   // the number of columns is stated in the define
   // COLUMNS
 
-  int i=0;
-  while(i<n){
+  int i=2;
+  while(i<=n){
     if(is_prime(i)){
       print_number(i);
     }
