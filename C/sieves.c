@@ -49,8 +49,8 @@ void print_sieves(int n){
 
     int A[n-1];
 
-    //set all elements to true (1)
-    for(i=0;i<n;i++){
+    //set all elements to true (1) SEGMENTATION FAULT
+    for(i=0;i<n-1;i++){
         A[i]=1;
     }
     

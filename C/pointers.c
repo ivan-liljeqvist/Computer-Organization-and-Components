@@ -2,10 +2,13 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 
 char* text1 = "This is a string.";
 char* text2 = "Yet another thing.";
-
+int* list1;
+int* list2;
+int count;
 
 
 void printlist(const int* lst){
@@ -22,6 +25,33 @@ void endian_proof(const char* c){
          (int)*c,(int)*(c+1), (int)*(c+2), (int)*(c+3));
   
 }
+
+void copycodes(char* str, int* toFill, int* count){
+
+   while(*str != 0){
+
+      *toFill=*str;
+      toFill+=1;
+
+      str++;
+      *count+=1;
+
+   }
+}
+
+void work(){
+  const int size=80;
+  
+  list1 = (int*) malloc(size);
+  list2 = (int*) malloc(size);
+
+  count=0;
+
+  copycodes(text1,list1,&count);
+  copycodes(text2,list2,&count);
+}
+
+
 
 int main(void){
   work();
