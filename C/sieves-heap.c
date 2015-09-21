@@ -47,8 +47,8 @@ void print_sieves(int n){
       therefore we dont allocate memory for that. instead we have (n+1)-2=n-1
       */
 
-    int* A;
-    A=(int *)malloc((n-1)*sizeof(int));
+    char* A;
+    A=(char *)malloc((n-1)*sizeof(char));
       
 
     //set all elements to true (1)
@@ -76,8 +76,6 @@ void print_sieves(int n){
 
     
 
-    printf("\n");
-    printf("Sive of A: %lu",sizeof(A));
     printf("\n");
 
     free(A);

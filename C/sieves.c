@@ -47,12 +47,24 @@ void print_sieves(int n){
       therefore we dont allocate memory for that. instead we have (n+1)-2=n-1
       */
 
-    int A[n-1];
+    char A[n-1];
 
     //set all elements to true (1) SEGMENTATION FAULT
     for(i=0;i<n-1;i++){
         A[i]=1;
     }
+
+    /*
+
+  
+    1) Gör en lista över alla tal från två till något valbart största tal n.
+    2) Stryk ut från listan alla jämna tal som är större än två (4, 6, 8 osv.).
+    3) Listans nästa tal som inte är utstruket är ett primtal.
+    4) Stryk ut alla tal, som är både större än det primtalet du hittade i föregående steget och multiplar av det.
+    5) Upprepa stegen 3 och 4 tills du har nått ett nummer som är större än kvadratroten av n (det största talet i listan).
+    6) Alla kvarstående tal i listan är primtal.
+
+    */
     
     //Implemented algorithm from pseudo code
     for(i=2;i<=sqrt(n);i++){
@@ -71,8 +83,6 @@ void print_sieves(int n){
         }
     }
 
-    printf("\n");
-    printf("Sive of A: %lu",sizeof(A));
     printf("\n");
 }
 

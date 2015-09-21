@@ -1,0 +1,30 @@
+
+
+.data
+
+
+text1: 	  .asciiz "This is a string."
+.align 2
+list1: 	.space 80
+
+
+.text
+
+
+la 	$a0,text1
+la	$a1,list1
+
+#take first letter, save to a1
+lb	$t0,0($a0)	
+sw	$t0,0($a1)
+
+#inc
+addi	$a0,$a0,1
+addi	$a1,$a1,4
+
+
+la 	$a0,list1	
+li	$v0,4
+syscall
+
+
