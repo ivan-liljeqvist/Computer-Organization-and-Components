@@ -236,7 +236,11 @@ int main()
 
   QUESTION 9
   *********************************************************
+  Consider AM18, AM19, and AF1. 
+  Explain why gv ends up with the incremented value, but m does not.
 
+  In the fun function we increment only the local parameter.
+  Then we assign that incremented value to gv.
 
   
 
