@@ -67,6 +67,7 @@ void print_sieves(int n){
     */
     
     //Implemented algorithm from pseudo code
+
     for(i=2;i<=sqrt(n);i++){
         if(A[i-2]){
             int j;
@@ -77,11 +78,24 @@ void print_sieves(int n){
         }
     }
 
+    int lastPrime=0;
+    int numberOfFourDiff=0;
+
     for(i=2;i<n;i++){
         if(A[i-2]){
+            
+            int diff=i-lastPrime;
+            lastPrime=i;
+
+            if(diff==4){
+              numberOfFourDiff++;
+            }
+
             print_number(i);
         }
     }
+
+    printf("\n\n Number of times there is a distance of 4: %d",numberOfFourDiff);
 
     printf("\n");
 }

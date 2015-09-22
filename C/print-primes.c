@@ -3,6 +3,8 @@
  By David Broman.
  Last modified: 2015-09-15
  This file is in the public domain.
+
+ Ivan Liljeqvist
 */
 
 

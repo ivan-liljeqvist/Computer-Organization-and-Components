@@ -1,5 +1,11 @@
 
 
+/*
+  By David Broman.
+  
+  Ivan Liljeqist
+*/
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,8 +84,6 @@ int main(void){
   When incrementing pointer in C we increment by the size of its contents.
   As if we were iterating through an array.
 
-  ASK!! 
-    What is the difference between incrementing a pointer and incrementing a variable that a pointer points to? Explain how you your code is incrementing the count variable.
 
   Big or little endian - LITTLE!
   when we experimented with counter and set it to 350 we got the output

@@ -3,12 +3,13 @@
  By David Broman.
  Last modified: 2015-09-15
  This file is in the public domain.
+
+ Ivan Liljeqvist
 */
 
 
 #include <stdio.h>
 
-//FILIP MARTINSSON WROTE THIS
 int is_prime(int n){
     int i;
     int res = 1;
