@@ -96,3 +96,5 @@ void labwork( void )
   *porte=*porte+1; //add one to PORTE which will change the LEDs so they shine in binary
 
 }
+
+
