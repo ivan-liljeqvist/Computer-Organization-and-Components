@@ -13,6 +13,7 @@
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
+#include "time4io.h"
 
 int mytime = 0x5957;
 volatile int* porte=0xbf886110;
@@ -43,6 +44,48 @@ void labinit( void )
 /* This function is called repetitively from the main program */
 void labwork( void )
 {
+
+  int buttonsPressed=getbtns();
+
+  char BTN2=buttonsPressed&0x01;
+  char BTN3=(buttonsPressed>>1)&0x01;
+  char BTN4=(buttonsPressed>>2)&0x01;
+
+  int switchValue=getsw();
+
+  //
+
+  //0x1230 -> 0x1430
+  /*
+      0x0400
+      0x1030
+  */
+
+  if(BTN2){
+    //0100
+    int newDigit = switchValue * 16;
+    int maskedCurrentTime = mytime & 0xFF0F; //mask away the third position
+    mytime = newDigit + maskedCurrentTime; //put the new digit in the correct place
+
+  }
+
+  else if(BTN3){
+
+    int newDigit = switchValue * 16 * 16;
+    int maskedCurrentTime = mytime & 0xF0FF; //mask away the third position
+    mytime = newDigit + maskedCurrentTime; //put the new digit in the correct place
+
+  }
+
+  else if(BTN4){
+
+    int newDigit = switchValue * 16 * 16 * 16;
+    int maskedCurrentTime = mytime & 0x0FFF; //mask away the third position
+    mytime = newDigit + maskedCurrentTime; //put the new digit in the correct place
+
+  }
+
+
   delay( 1000 );
   time2string( textstring, mytime );
   display_string( 3, textstring );
