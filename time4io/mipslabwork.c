@@ -35,7 +35,7 @@ void labinit( void )
   *triseclr = 0xFF; 
 
 
-  TRISDCLR = 0xFE0; //bits 11-5 set to 1 so that they will be 0 in TRISD (output)
+  TRISDSET = 0xFE0; //bits 11-5 set to 1 so that they will be 0 in TRISD (output)
 
 
   return;
@@ -93,8 +93,8 @@ void labwork( void )
   tick( &mytime );
   display_image(96, icon);
 
-  *porte=*porte+1; //add one to PORTE which will change the LEDs so they shine in binary
-
+  *porte=(*porte+1)%256; //add one to PORTE which will change the LEDs so they shine in binary
+  //we have only 8 LEDS max is 255
 }
 
 
