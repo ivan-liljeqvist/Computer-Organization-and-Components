@@ -95,15 +95,57 @@ void labwork( void ) {
 /**
 
 • How is the time-out event-flag checked?
-• When the time-out event-flag is a "1", how does your code reset it to "0"?
-• What would happen if the time-out event-flag was not reset to "0" by your code? Why?
-• For this assignment, please make a new estimate of how many times per second your code checks the time-out event-flag: 1, 10, 100, 1000, 10 000, 100 000, a million, 10 million, 100 million times? How did you calculate your answer?
-• From which part of the code is the function user_isr called? Why is it called from there?
-• Why are registers saved before the call to user_isr? Why are only some registers saved?
-• Is the function user_isr called from the labwork function? Why, or why not?
-• Which part (or parts) of your code is (are) required to enable interrupts from the timer?
-• If the time-out event-flag changes to a "1" while the function display_string is running, could the display show some kind of incorrect pattern – perhaps wrong numbers or so? If so,
-for how long would the pattern be displayed? Make a reasonable estimate. These two questions are difficult, so it's okay not to have a perfect answer.
 
+  We don't check any flag. The Interrupt Service Routine is called automatically when 
+  timer2 has reached a timeout.
+
+• When the time-out event-flag is a "1", how does your code reset it to "0"?
+
+  IFS(0) = 0; We reset all flags by setting all bits to 0. This works for us because we only have 1 iterruption.
+
+• What would happen if the time-out event-flag was not reset to "0" by your code? Why?
+
+  The clock ticks extremely fast. 
+  The flag is always on and Interrupt Service Routine is being called over and over again.
+
+• For this assignment, please make a new estimate of how many times per second your code checks the 
+  time-out event-flag: 1, 10, 100, 1000, 10 000, 100 000, a million, 10 million, 100 million times? 
+  How did you calculate your answer?
+
+  ALDRIG!!
+
+• From which part of the code is the function user_isr called? Why is it called from there?
+
+  It's called from vectors.S from the ISR. It's a low-level function that gets triggered when
+  an interrupt has occured.
+
+• Why are registers saved before the call to user_isr? Why are only some registers saved?
+
+  The temporary registers are saved because every function has the right to change them.
+  Therefore before calling user_isr we need to backup and then restore in case user_isr changes them.
+
+• Is the function user_isr called from the labwork function? Why, or why not?
+
+  OUTSIDE labwork!
+  It's called automatically when the timer hits timeout. the timer sends a signal 
+  to the processor which jumps to trampoline function which in turn calls user_isr
+
+• Which part (or parts) of your code is (are) required to enable interrupts from the timer?
+
+  IPCSET(2)=4; //enable timer2 iterrupts. 4 = 100 and bits 4,3,2 in IPS have
+  //the value for timer2 priority. bits 4,3,2 will become 001 
+  IECSET(0)=256; // 1 0000 0000 We want to set bit 8 to enable iterrupts from timer2. table 4-4
+  enable_interrupt(); //our own assembler subroutine that runs ei and enables interrupts
+
+• If the time-out event-flag changes to a "1" while the function display_string is running, 
+  could the display show some kind of incorrect pattern – perhaps wrong numbers or so? 
+  If so, for how long would the pattern be displayed? Make a reasonable estimate. 
+  These two questions are difficult, so it's okay not to have a perfect answer.
+
+  1) YES! We saw it multiple times when we increased the interrupt speed.
+  2) Until the next display update. It's very difficult to calculate, we don't know much about the functions
+    nextprime, display_string, display_update. 
+    If we knew the number of instructions in each of them we could divide the processor frequency.
+    But it's about 0.1s if you look carefully at the display.
 
 */

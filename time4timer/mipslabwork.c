@@ -185,7 +185,9 @@ void labwork( void )
   the time between time-out events? 
   Describe the function of that register (or of those registers).
 
-
+  FRÅGAAA!"!!"!!!
+  menas perioden?
+  PR2 = 0x7A12;?
 
 • If you press BTN3 quickly, does the time update reliably? 
   Why, or why not? If not, would that be easy to change? If so, how?
